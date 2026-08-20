@@ -1,6 +1,6 @@
 import { useSignUp } from "@clerk/expo";
 import { Link, useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
     ActivityIndicator,
     Alert,
@@ -15,12 +15,28 @@ import {
 export default function SignUp() {
   const router = useRouter();
   const { signUp, errors, fetchStatus } = useSignUp();
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [code , setCode] = useState("");
 
   const isLoading = fetchStatus === "fetching";
+
+  const handleSignUp = async () => {
+
+    const {error} = await signUp.password({
+        emailAddress: email,
+        password,
+        firstName,
+        lastName,
+    })
+    if (error) {
+      Alert.alert("Error", error.message);
+      return;
+    }
+    if (!error) await signUp.verifications.sendEmailCode();
+  }
 
   
   return (
@@ -88,7 +104,7 @@ export default function SignUp() {
 
         <TouchableOpacity
           disabled={isLoading}
-          
+          onPress={handleSignUp}          
           className="w-full bg-blue-600 py-4 rounded-xl items-center mb-4"
         >
           {isLoading ? (
