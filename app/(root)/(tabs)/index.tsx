@@ -58,8 +58,8 @@ export default function HomeScreen() {
             {/* Header  */}
             <View className="flex-row items-center justify-between px-5 pt-4 pb-5">
               <Image
-                source={require("../../../assets/images/logo.png")}
-                style={{ width: 90, height: 36 }}
+                source={require("../../../assets/images/logo-tight.png")}
+                style={{ width: 150, height: 64 }}
 
                 resizeMode="contain"
               />

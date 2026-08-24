@@ -1,7 +1,6 @@
-import { useAuth, useSignIn } from "@clerk/expo";
+import { useSignIn } from "@clerk/expo";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link, useRouter } from "expo-router";
-import { navigate } from "expo-router/build/global-state/routing";
 import React, { useState } from "react";
 import {
     ActivityIndicator,
@@ -91,8 +90,8 @@ export default function SignIn() {
     return (
       <View className="flex-1 px-6 py-12 justify-center">
         <Image
-          source={require("../../assets/images/logo.png")}
-          className="w-32 h-16 mb-8"
+          source={require("../../assets/images/logo-tight.png")}
+          style={{ width: 248, height: 106, marginBottom: 32 }}
           resizeMode="contain"
         />
         <Text className="text-3xl font-bold mb-2 text-gray-800">
@@ -143,8 +142,8 @@ export default function SignIn() {
     >
       <View className="flex-1 px-6 py-12 justify-center">
         <Image
-          source={require("../../assets/images/logo.png")}
-          className="w-32 h-16 mb-8"
+          source={require("../../assets/images/logo-tight.png")}
+          style={{ width: 248, height: 106, marginBottom: 32 }}
           resizeMode="contain"
         />
         <Text className="text-3xl font-bold mb-2 text-gray-800">

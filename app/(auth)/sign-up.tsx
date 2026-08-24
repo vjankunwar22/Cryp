@@ -67,8 +67,8 @@ export default function SignUp() {
     return (
       <View className="flex-1 px-6 py-12 justify-center">
         <Image
-          source={require("../../assets/images/logo.png")}
-          className="w-32 h-16 mb-8"
+          source={require("../../assets/images/logo-tight.png")}
+          style={{ width: 248, height: 106, marginBottom: 32 }}
           resizeMode="contain"
         />
         <Text className="text-3xl font-bold mb-2 text-gray-800">
@@ -119,8 +119,8 @@ export default function SignUp() {
     >
       <View className="flex-1 px-6 py-12 justify-center">
         <Image
-          source={require("../../assets/images/logo.png")}
-          className="w-32 h-16 mb-8"
+          source={require("../../assets/images/logo-tight.png")}
+          style={{ width: 248, height: 106, marginBottom: 32 }}
           resizeMode="contain"
         />
         <Text className="text-3xl font-bold mb-2 text-gray-800">

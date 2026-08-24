@@ -3,8 +3,8 @@ import { useUserStore } from "@/store/userStore";
 import { Property } from "@/types";
 import { useAuth } from "@clerk/expo";
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -46,19 +46,31 @@ export default function PropertyDetailScreen() {
   const { isSaved, saveLoading, toggleSave } = useSavedProperty(id ?? "");
   const authSupabase = useSupbase();
 
-  useEffect(() => {
-    fetchProperty();
-  }, [id]);
+  useFocusEffect(
+    useCallback(() => {
+      let isMounted = true;
 
-  const fetchProperty = async () => {
-    const { data } = await supabase
-      .from("properties")
-      .select("*")
-      .eq("id", id)
-      .single();
-    setProperty(data);
-    setLoading(false);
-  };
+      async function fetchProperty() {
+        setLoading(true);
+        const { data } = await supabase
+          .from("properties")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (!isMounted) return;
+
+        setProperty(data);
+        setLoading(false);
+      }
+
+      fetchProperty();
+
+      return () => {
+        isMounted = false;
+      };
+    }, [id]),
+  );
 
   const handleDelete = () => {
     Alert.alert("Delete Property", "Are you sure?", [
@@ -96,6 +108,24 @@ export default function PropertyDetailScreen() {
       message
     )}`;
     Linking.openURL(url);
+  };
+
+  const handleBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+
+    router.replace("/(root)/(tabs)");
+  };
+
+  const handleEdit = () => {
+    if (!property) return;
+
+    router.push({
+      pathname: "/(root)/(tabs)/create",
+      params: { propertyId: property.id },
+    });
   };
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -182,7 +212,7 @@ export default function PropertyDetailScreen() {
           <SafeAreaView className="absolute top-0 left-0 right-0">
             <View className="flex-row items-center justify-between px-4 pt-2">
               <TouchableOpacity
-                onPress={() => router.back()}
+                onPress={handleBack}
                 className="w-10 h-10 bg-white rounded-full items-center justify-center"
                 style={{ elevation: 3 }}
               >
@@ -330,7 +360,16 @@ export default function PropertyDetailScreen() {
 
           {/* Admin Actions */}
           {isAdmin && (
-            <View className="flex-row gap-3">
+            <View className="gap-3">
+              <TouchableOpacity
+                onPress={handleEdit}
+                className="flex-row items-center justify-center gap-2 bg-blue-50 py-4 rounded-2xl border border-blue-100"
+              >
+                <Ionicons name="create-outline" size={18} color="#2563EB" />
+                <Text className="text-blue-600 font-semibold">Edit</Text>
+              </TouchableOpacity>
+
+              <View className="flex-row gap-3">
               {!property.is_sold && (
                 <TouchableOpacity
                   onPress={handleMarkSold}
@@ -353,6 +392,7 @@ export default function PropertyDetailScreen() {
                 <Ionicons name="trash-outline" size={18} color="#EF4444" />
                 <Text className="text-red-500 font-semibold">Delete</Text>
               </TouchableOpacity>
+              </View>
             </View>
           )}
         </View>
